@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+   <trades>
+     <trade>
+        <symbol>APPL</symbol>
+        <quantity>100</quantity>
+        <createdDate>2020-04-25T22:06:32.0591633</createdDate>
+        <price>278</price>
+        <exchange>NASDAQ</exchange>
+        <id>16</id>
+        <operation>Sell</operation>
+      </trade>
+    </trades>

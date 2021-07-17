@@ -1,0 +1,39 @@
+#%RAML 1.0
+title: truist-mobile-trade-exp-api
+traits:
+  headerTrade: !include traits/headerTrait.raml
+  queryParamsTrade: !include traits/queryParamsTrait.raml 
+
+/trade:
+  /fx:
+    get:
+      is:
+         [headerTrade, queryParamsTrade]
+      responses:
+       200:
+         body:
+          application/xml:
+            example: !include examples/tradeFXRespose.xml
+  /equity:
+    get:
+      is:
+         [headerTrade, queryParamsTrade]
+      responses:
+       200:
+         body:
+          application/xml:
+            example: !include examples/tradeEquityRespose.xml
+
+                          
+         
+                      
+             
+ 
+		  
+              
+                             
+                
+
+
+              
+
