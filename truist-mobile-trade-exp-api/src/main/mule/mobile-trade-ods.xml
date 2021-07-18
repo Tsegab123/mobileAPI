@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="45acc653-0f58-48e8-9a29-9fa798714485" >
+		<http:request-connection host="localhost" port="8082" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="2e63c502-fdf3-47f3-93a4-c4977ebe5bb3" >
+		<http:request-connection host="localhost" port="8082" />
+	</http:request-config>
+	<sub-flow name="mobile-trade-ods-fx" doc:id="6fad0b37-efc6-44f5-b354-b70eb82e06f2" >
+		<logger level="INFO" doc:name="Start -mobile -trade" doc:id="f86b2cd2-9f3f-4053-b62c-ecda52421d42" message="Start mobile trade ods loger exp api"/>
+		<http:request method="GET" doc:name="mobile-trade-fx" doc:id="06452ed4-68f5-4899-be13-05837e064f54" config-ref="HTTP_Request_configuration" path="/api/v1/trade/ods/fx" responseTimeout="#[2000000]">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	consumerId : attributes.headers.consumerId
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"operation" : attributes.queryParams.operation,
+	"limit" : attributes.queryParams.limit,
+	"exchangeRate": attributes.queryParams.exchangeRate,
+	"symbol" : attributes.queryParams.symbol
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="convert from JSON to XML" doc:id="ee170cca-8ffc-4375-ad01-74ee5e7b4ae3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+trades: {
+	
+	trade: payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End- mobile -trade" doc:id="31193aaf-4f4e-41e0-873c-5e30fcf8e42b" message="Start mobile trade ods loger exp api"/>
+	</sub-flow>
+	<sub-flow name="mobile-trade-ods-equity" doc:id="b6493b51-1f5b-4470-95ce-244b7ea60039" >
+		<logger level="INFO" doc:name="Start-mobile-trade-equity " doc:id="58924c9e-cfcc-46a2-ac0e-e8e4cfc848aa" message="Start mobile trade ods loger exp api"/>
+		<http:request method="GET" doc:name="mobile-trade-equity" doc:id="12d24450-2822-485e-a703-b45d91a081d5" config-ref="HTTP_Request_configuration1" path="/api/v1/trade/ods/equity">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	consumerId : attributes.headers.consumerId
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"operation" : attributes.queryParams.operation,
+	"limit": attributes.queryParams.limit,
+	"exchangeRate" : attributes.queryParams.exchangeRate,
+	"symbol" : attributes.queryParams.symbol
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Convert from JSON to XML" doc:id="a09a5ab2-d470-4eb5-88d8-18f3de48a740" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+trades: {
+	
+	trade: payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End-mobile-trade-equity " doc:id="93d548dd-6161-4e09-ac8a-34e3d05e1ada" message="End mobile trade ods loger exp api"/>
+	</sub-flow>
+</mule>
